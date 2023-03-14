@@ -1,9 +1,10 @@
 import discord
 import os
 import requests
+import time, datetime
 
 from discord.ext import commands
-from utils import config, errorHandler, mysqlConfig
+from utils import config, errorHandler
 from utils.intHandler import statusValues
 
 bot = commands.Bot(command_prefix=config.prefix, intents=discord.Intents.all())
@@ -12,10 +13,13 @@ bot = commands.Bot(command_prefix=config.prefix, intents=discord.Intents.all())
 async def on_ready():
     os.system('CLS')
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
-    await bot.load_extension("utils.errorHandler")   
+
+    await bot.load_extension("utils.errorHandler")
+    bot.remove_command("help")
     await bot.change_presence(status=discord.Status.idle, 
                               activity=discord.Activity(type=discord.ActivityType.watching, 
                               name="something"))  
+
     if bot.user.bot != True:
         print(f'You are not running on a bot account. ({bot.user})')
 
@@ -65,7 +69,13 @@ async def check_ranked(ctx, username):
                 await message.edit(content=f"You do not have any ranked maps, {username}.")
 
         break
-        
 
+@bot.command()
+async def ping(ctx):
+    await ctx.send('Pong! Took {0}ms.'.format(round(bot.latency, 4)))
+
+@bot.command()
+async def himekawa(ctx):
+    await ctx.send("Every attempt at making an argument you Fail. You try to  make a map and Fail. You try doing anything and Failure is the only path you walk towards. You live a life devoid of any meaning. Stop trying to talk to me when you lack the mental fortitude to even say something tangible.")
 
 bot.run(config.token)
