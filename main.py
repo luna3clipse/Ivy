@@ -51,31 +51,31 @@ async def check_ranked(ctx, username):
         await ctx.send("**Request failed** (No maps)")
         return
         
-        with open("./misc/users.txt") as f:
-            if username in f.read():
-                print(f"[{username}] Repeat user found")
-                await ctx.send(f"**You have already verified**, {username}")
-                return
+    with open("./misc/users.txt") as f:
+        if username in f.read():
+            print(f"[{username}] Repeat user found")
+            await ctx.send(f"**You have already verified**, {username}")
+            return
 
-            msg = await ctx.send("*Checking your maps...*")
+        msg = await ctx.send("*Checking your maps...*")
             
-            for i in data:
-                if i['approved'] != '1':
-                    if config.debug == '1':
-                        bid = i['beatmapset_id']
-                        app = i['approved']
-                        status = statusValues[app]
-                        print(f"{username} | {bid} | {app} ({status})")
-                        continue
+        for i in data:
+            if i['approved'] != '1':
+                if config.debug == '1':
+                    bid = i['beatmapset_id']
+                    app = i['approved']
+                    status = statusValues[app]
+                    print(f"{username} | {bid} | {app} ({status})")
+                    continue
                         
-                    else:
-                        continue
+                else:
+                    continue
                         
-                elif i['approved'] == '1':
-                    await ctx.author.add_roles(role)
-                    await msg.edit(content=f"Ranked map found! You have received your role, **{username}**.")
-                    print(f"{username} | Ranked map found - giving role")
-                    return
+            elif i['approved'] == '1':
+                await ctx.author.add_roles(role)
+                await msg.edit(content=f"Ranked map found! You have received your role, **{username}**.")
+                print(f"{username} | Ranked map found - giving role")
+                return
 
     await msg.edit(content=f"You do **not** have any ranked maps, {username}.")
 
