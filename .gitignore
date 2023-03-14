@@ -154,3 +154,4 @@ cython_debug/
 utils/config.py
 utils/mysqlConfig.py
 misc/users.txt
+utils/config.py
