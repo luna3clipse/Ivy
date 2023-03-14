@@ -2,9 +2,10 @@ import discord
 import os
 import requests
 import time, datetime
+import random
 
 from discord.ext import commands
-from utils import config, errorHandler
+from utils import config, errorHandler, himekawaHandler
 from utils.intHandler import statusValues
 
 bot = commands.Bot(command_prefix=config.prefix, intents=discord.Intents.all())
@@ -34,6 +35,7 @@ async def on_ready():
 
 @bot.command(aliases=['check', 'checkrank'])
 async def check_ranked(ctx, username):
+    role = discord.utils.get(user.guild.roles, name="ranked")
     req = requests.get(f"https://osu.ppy.sh/api/get_beatmaps?u={username}&since=1999-01-01&k={config.osukey}")
     data = req.json()
 
@@ -42,8 +44,8 @@ async def check_ranked(ctx, username):
             print(f"[{username}] Repeat user found")
             await ctx.send("You have already verified!")
         else:
-            global message
-            message = await ctx.send("*Checking your maps...*")
+            global msg
+            msg = await ctx.send("*Checking your maps...*")
       
     while True:
         for i in data:
@@ -59,14 +61,14 @@ async def check_ranked(ctx, username):
                     continue
 
             elif i['approved'] == '1':
-                await message.edit(content=f"Ranked map found! You have received your role, **{username}**.")
+                await msg.edit(content=f"Ranked map found! You have received your role, **{username}**.")
                 print(f"{username} | Ranked map found - giving role")
                 with open("./misc/users.txt", "a") as f:
                     f.write(f"\n{username}")
                 break
 
             else:
-                await message.edit(content=f"You do not have any ranked maps, {username}.")
+                await msg.edit(content=f"You do not have any ranked maps, {username}.")
 
         break
 
@@ -76,6 +78,10 @@ async def ping(ctx):
 
 @bot.command()
 async def himekawa(ctx):
-    await ctx.send("Every attempt at making an argument you Fail. You try to  make a map and Fail. You try doing anything and Failure is the only path you walk towards. You live a life devoid of any meaning. Stop trying to talk to me when you lack the mental fortitude to even say something tangible.")
+    await ctx.send(random.choice(himekawaHandler.himePhrases))
+
+@bot.command()
+async def about(ctx):
+    await ctx.send("This was brought to you by LUNA :D\nI made this whole bot in about 3 hours and I'm gonna keep adding to it so I hope you all like the features\nAlso do .himekawa if you haven't already :-)")
 
 bot.run(config.token)
