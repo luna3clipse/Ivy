@@ -48,6 +48,12 @@ async def on_ready():
 @bot.command(aliases=['check', 'checkrank'])
 async def check_ranked(ctx, username):
     role = discord.utils.get(ctx.author.guild.roles, name="ranked")
+    
+    with open('./misc/users.txt') as f:
+        if f'{username}' in f.read():
+            print(f"[{username}] Repeat user found")
+            await ctx.send("You have already verified!")
+            return
 
     headers = {"Authorization": f"Bearer {OSU_TOKEN}"}
     
@@ -58,7 +64,7 @@ async def check_ranked(ctx, username):
             beatmapset_count = response.json()['ranked_beatmapset_count']
 
             if beatmapset_count > 0:
-                await ctx.send(f"{username} has {beatmapset_count} ranked beatmapsets!")
+                await ctx.send(f":white_check_mark: {username} has **{beatmapset_count}** ranked beatmapsets!")
                 await ctx.author.add_roles(role)
             else:
                 await ctx.send(f"{username} does not have any ranked beatmapsets.")
