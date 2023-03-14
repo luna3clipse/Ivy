@@ -36,7 +36,12 @@ async def on_ready():
 @bot.command(aliases=['check', 'checkrank'])
 async def check_ranked(ctx, username):
     role = discord.utils.get(ctx.author.guild.roles, name="ranked")
+    chars = set("!£$%^&*(),=#~@';:.,></?¬`")
     
+    if any((c in chars) for c in username):
+        await ctx.send("**Request failed** (Invalid characters in name)")
+        return
+
     async with httpx.AsyncClient() as client:
         user_res = await client.get(f"https://osu.ppy.sh/api/get_user?u={username}&k={config.osukey}")
         user_data = user_res.json()
