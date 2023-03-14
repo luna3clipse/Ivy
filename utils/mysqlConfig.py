@@ -1,7 +1,7 @@
 HOSTNAME="127.0.0.1"
 USERNAME="root"
-PASSWORD="slakers11"
-DATABASE="insurance"
+PASSWORD="password"
+DATABASE="kyouki"
 
 config = {
     'user': {USERNAME},
