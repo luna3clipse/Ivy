@@ -1,6 +1,6 @@
 import discord
 import os
-import requests
+import httpx
 import time, datetime
 import random
 
@@ -35,42 +35,49 @@ async def on_ready():
 
 @bot.command(aliases=['check', 'checkrank'])
 async def check_ranked(ctx, username):
-    role = discord.utils.get(user.guild.roles, name="ranked")
-    req = requests.get(f"https://osu.ppy.sh/api/get_beatmaps?u={username}&since=1999-01-01&k={config.osukey}")
-    data = req.json()
+    role = discord.utils.get(ctx.author.guild.roles, name="ranked")
+    
+    async with httpx.AsyncClient() as client:
+        user_res = await client.get(f"https://osu.ppy.sh/api/get_user?u={username}&k={config.osukey}")
+        user_data = user_res.json()
+        if not user_data:
+            await ctx.send("**Request failed** (Restricted/invalid username)")
+            return
+            
+        beatmaps_res = await client.get(f"https://osu.ppy.sh/api/get_beatmaps?u={username}&since=1999-01-01&k={config.osukey}")
+        data = beatmaps_res.json()
 
-    with open('./misc/users.txt') as f:
-        if f'{username}' in f.read():
-            print(f"[{username}] Repeat user found")
-            await ctx.send("You have already verified!")
-        else:
-            global msg
+    if not data:
+        await ctx.send("**Request failed** (No maps)")
+        return
+        
+        with open("./misc/users.txt") as f:
+            if username in f.read():
+                print(f"[{username}] Repeat user found")
+                await ctx.send(f"**You have already verified**, {username}")
+                return
+
             msg = await ctx.send("*Checking your maps...*")
-      
-    while True:
-        for i in data:
-            if i['approved'] != '1':
-                if config.debug == '1':
-                    bid = i['beatmapset_id']
-                    app = i['approved']
-                    status = statusValues[app]
-                    print(f"{username} | {bid} | {app} ({status})")
-                    continue
+            
+            for i in data:
+                if i['approved'] != '1':
+                    if config.debug == '1':
+                        bid = i['beatmapset_id']
+                        app = i['approved']
+                        status = statusValues[app]
+                        print(f"{username} | {bid} | {app} ({status})")
+                        continue
+                        
+                    else:
+                        continue
+                        
+                elif i['approved'] == '1':
+                    await ctx.author.add_roles(role)
+                    await msg.edit(content=f"Ranked map found! You have received your role, **{username}**.")
+                    print(f"{username} | Ranked map found - giving role")
+                    return
 
-                else:
-                    continue
-
-            elif i['approved'] == '1':
-                await msg.edit(content=f"Ranked map found! You have received your role, **{username}**.")
-                print(f"{username} | Ranked map found - giving role")
-                with open("./misc/users.txt", "a") as f:
-                    f.write(f"\n{username}")
-                break
-
-            else:
-                await msg.edit(content=f"You do not have any ranked maps, {username}.")
-
-        break
+    await msg.edit(content=f"You do **not** have any ranked maps, {username}.")
 
 @bot.command()
 async def ping(ctx):
