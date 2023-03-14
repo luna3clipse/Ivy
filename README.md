@@ -3,7 +3,8 @@ I wanted to make something funny that actually somewhat had a bit of use, so her
 
 ## Requirements
 Python 3.8+  
-discord.py (latest)  
+discord.py (latest)
+httpx 0.23.3
 Somewhat of a brain
 
 ## Setup
