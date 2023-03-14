@@ -151,11 +151,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-config.py
-./utils/config.py
 utils/config.py
-/utils/config.py
-mysqlConfig.py
-./utils/mysqlConfig.py
 utils/mysqlConfig.py
-/utils/mysqlConfig.py
+misc/users.txt
