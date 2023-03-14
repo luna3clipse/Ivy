@@ -81,7 +81,7 @@ async def himekawa(ctx):
 
 @bot.command()
 async def about(ctx):
-    await ctx.send("This was brought to you by LUNA :D\nI made this whole bot in about 3 hours and I'm gonna keep adding to it so I hope you all like the features\nAlso do .himekawa if you haven't already :-)")
+    await ctx.send("This was brought to you by LUNA :D\nI made this whole bot in about 3 hours and I'm gonna keep adding to it so I hope you all like the features\nThank you to Visionary & tsunyoku for help with the osu! API\nAlso do .himekawa if you haven't already :-)")
 
 if __name__ == "__main__":
     bot.run(config.token)
