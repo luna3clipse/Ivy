@@ -1,0 +1,5 @@
+- Basic moderation commands (kick, ban, mute, warn system w/ DB, etc)
+- Purge command
+- Finish ranked map verification command
+- Cool image commands (?)
+- Gay sex
