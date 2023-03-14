@@ -1,7 +1,7 @@
 HOSTNAME="127.0.0.1"
 USERNAME="root"
 PASSWORD="password"
-DATABASE="kyouki"
+DATABASE="ivy"
 
 config = {
     'user': {USERNAME},
